@@ -1,0 +1,6 @@
+*.exe
+debug
+prometheus-webhook-snmptrapper
+.vscode
+.vscode/launch.json
+test.sh

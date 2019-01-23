@@ -278,7 +278,7 @@ func (s *TrapServer) handle(listener TrapListener, conn interface{}, msg message
 
 	if pdu != nil {
 		switch t := pdu.PduType(); t {
-		case SNMPTrapV2, InformRequest:
+		case Trap, SNMPTrapV2, InformRequest:
 		default:
 			err = &MessageError{
 				Message: fmt.Sprintf("Invalid PduType: %s ", t),

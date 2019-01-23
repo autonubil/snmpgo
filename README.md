@@ -1,6 +1,3 @@
-[![Build Status](https://travis-ci.org/k-sone/snmpgo.svg?branch=master)](https://travis-ci.org/k-sone/snmpgo)
-[![GoDoc](https://godoc.org/github.com/k-sone/snmpgo?status.svg)](http://godoc.org/github.com/k-sone/snmpgo)
-
 snmpgo
 ======
 
@@ -14,6 +11,7 @@ Supported Message Types
 * SNMP V1
     - GetRequest
     - GetNextRequest
+    - Trap
 * SNMP V2c, V3
     - GetRequest
     - GetNextRequest

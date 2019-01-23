@@ -261,13 +261,16 @@ func (s *SNMP) GetBulkWalk(oids Oids, nonRepeaters, maxRepetitions int) (result 
 			}
 		}
 	}
-
 	resBinds = append(nonRepBinds, resBinds.Sort().Uniq()...)
 	return NewPduWithVarBinds(s.args.Version, GetResponse, resBinds), nil
 }
 
+func (s *SNMP) V1Trap(enterprise *Oid, genericTrap int, specificTrap int, ipaddress *Ipaddress, varBinds VarBinds) error {
+	return s.v1trap(Trap, enterprise, genericTrap, specificTrap, ipaddress, varBinds)
+}
+
 func (s *SNMP) V2Trap(varBinds VarBinds) error {
-	return s.v2trap(SNMPTrapV2, varBinds)
+	return s.v2trap(Trap, varBinds)
 }
 
 // Send trap with the authoritative engine boots and time when used with SNMP V3.
@@ -296,6 +299,21 @@ func (s *SNMP) V2TrapWithBootsTime(varBinds VarBinds, eBoots, eTime int) error {
 
 func (s *SNMP) InformRequest(varBinds VarBinds) error {
 	return s.v2trap(InformRequest, varBinds)
+}
+
+func (s *SNMP) v1trap(pduType PduType, enterprise *Oid, genericTrap int, specificTrap int, ipaddress *Ipaddress, varBinds VarBinds) (err error) {
+	if s.args.Version > V1 {
+		return &ArgumentError{
+			Value:   s.args.Version,
+			Message: "Unsupported SNMP Version",
+		}
+	}
+
+	if err == nil {
+		pdu := NewPduTrapV1WithVarBinds(s.args.Version, pduType, enterprise, genericTrap, specificTrap, ipaddress, varBinds)
+		_, err = s.sendPdu(pdu)
+	}
+	return err
 }
 
 func (s *SNMP) v2trap(pduType PduType, varBinds VarBinds) (err error) {

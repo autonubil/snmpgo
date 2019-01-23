@@ -25,9 +25,13 @@ func (mp *messageProcessingV1) PrepareOutgoingMessage(
 
 	_, ok := pdu.(*PduV1)
 	if !ok {
-		return nil, &ArgumentError{
-			Value:   pdu,
-			Message: "Type of Pdu is not PduV1",
+
+		_, ok := pdu.(*PduTrapV1)
+		if !ok {
+			return nil, &ArgumentError{
+				Value:   pdu,
+				Message: "Type of Pdu is not PduV1 or PduTrapV1",
+			}
 		}
 	}
 	pdu.SetRequestId(genRequestId())
